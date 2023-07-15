@@ -1,63 +1,81 @@
-SETTING UP OF CI/CD PIPELINES IN AZURE DEVOPS TO DEPLOY an ASP.NET APP TO AZURE APP SERVICE
-1.	Clone the source code from the remote repository (Github) to your local machine
-git clone https://github.com/chunglee-ochieze/HelloWorld
-2.	Create a new organization in Azure DevOps
-i.	Login to Azure portal and search for Azure DevOps
-ii.	Click on Azure DevOps Organization
- 
-iii.	Create a new organization and create a new project
-3.	Connect the Azure Repo to your local git repo
-To do this, you need to copy the link in your Azure Repo and then run the following command using the copied link
-git remote add Myworks.zxy https://MyWorksXYZ@dev.azure.com/MyWorksXYZ/Myworks.xyz/_git/Myworks.xyz
-4.	Push the source code into azure repo
-From your local repo run the following commands
-git push Myworks.xyz master
-(You may have to sign in to your Azure DevOps Organization to authorize this)
-5.	Create and run an Azure Build Pipeline for the solution
-i.	In Azure DevOps environment, click on pipeline and create a new pipeline.
-ii.	Select the repository to create the pipeline for. Here, you will have to select the repo created earlier Myworks.xyz
-iii.	Configure your pipeline by selecting the framework for which the app is built, in our case it is ASP.NET Core
-iv.	Check the yaml file and add the trigger task below to enable continuous integration 
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: 'Myworks.xyz'
-v.	Save and run.
-Because the created pipeline will be added to our source code in the repo you have to commit it to the repo and give a commit message.
-6.	Create an Azure app service for the solution.
-i.	Go to Azure portal and search for App Service, click on App Service from the search result
-ii.	Click on create and select web app
-iii.	In the new page, select the appropriate subscription and resource group
-iv.	In the instance details, fill the following as appropriate;
--	Name: myworksxyz (This is the name of our app, give the name of yours)
--	Publish: Code
--	Runtime stack: .NET 6 (LTS)
--	Operating system: Windows
--	Region: West Europe
-v.	For pricing plan, select according to your compute requirement, but for the purpose of this tutorial, we are using Standard S1, since our app is just a simple hello world app.
-vi.	After this, click on review and create at the bottom left corner of the page
-Note: There are other settings after this page but they are not our concern as our app is a simple hello world app. You can check out the settings and tweak them according to your preference before clicking on review and create.
-vii.	After the settings has been successfully reviewed, you can click on create.
-viii.	After the service has been successfully created, click on Go to Resource. Then click on the Default domain name provided in the overview board to verify that the service has been successfully deployed.
-7.	Create a release pipeline for the solution.
-i.	Go to Azure DevOps project environment, under the Pipeline blade, click on release.
-ii.	Select Azure App Service deployment from the list provided
-iii.	Give the stage name and click on the cancel button
-iv.	On the new page, click on add artifact and add the artifact created by your build pipeline.
-v.	At the top of the artifact box click on the sign and in the pop up, enable continuous deployment.
- 
- 
-vi.	Click on the cancel sign to close this box
- 
-vii.	Click on task next to pipeline just above the two boxes (Artifacts and Stages)
- 
-viii.	From the dropdown under Azure Subscription, the appropriate subscription and click on authorize, you will be required to sign in to your azure account.
- 
-ix.	Scroll down and select the appropriate app service you created earlier
- 
-x.	Click on save to save the settings and click OK
-xi.	Click on create release close to the save button, confirm that everything is Ok and click on create. Note that you can click on release to see the progress of your pipeline.
-8.	Now that the release has been done, click on the url of your app service and check that your deployment has been successful and the page is now serving your app.
-After deploying the app, I found out the app is not serving an Hello World page as contrary to the name of the app on github, so, I decided to test out the CI/CD by replacing the served index.cshtml file with a simple “Hello World” file and the hello world was immediately served by the app service. After then, I reverted back the initial index.cshtml that was served to also test the environment one more time. 
-You can find the hello world file in the code folder saved as index-HelloWorld.cshtml.
+# Setting up CI/CD Pipelines in Azure DevOps to Deploy an ASP.NET App to Azure App Service
+
+This guide explains how to set up CI/CD pipelines in Azure DevOps to deploy an ASP.NET application to Azure App Service.
+
+## Prerequisites
+
+- Clone the source code from the remote repository (GitHub) to your local machine:
+   ```
+   git clone https://github.com/chunglee-ochieze/HelloWorld
+   ```
+
+## Steps
+
+1. Create a new organization in Azure DevOps:
+    - Login to the Azure portal and search for Azure DevOps.
+    - Click on Azure DevOps Organization.
+    - Create a new organization and project.
+
+2. Connect the Azure Repo to your local git repo:
+    - Copy the link from your Azure Repo.
+    - Run the following command using the copied link:
+      ```
+      git remote add Myworks.zxy https://MyWorksXYZ@dev.azure.com/MyWorksXYZ/Myworks.xyz/_git/Myworks.xyz
+      ```
+
+3. Push the source code into the Azure repo:
+   - From your local repo, run the following command:
+     ```
+     git push Myworks.xyz master
+     ```
+
+4. Create and run an Azure Build Pipeline for the solution:
+    - In the Azure DevOps environment, click on "Pipeline" and create a new pipeline.
+    - Select the repository (Myworks.xyz) to create the pipeline for.
+    - Configure your pipeline by selecting the framework for the app (ASP.NET Core).
+    - Check the YAML file and add the trigger task below to enable continuous integration:
+      ```yaml
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'Myworks.xyz'
+      ```
+    - Save and run the pipeline.
+
+5. Create an Azure App Service for the solution:
+    - Go to the Azure portal and search for "App Service", then click on it.
+    - Click on "Create" and select "Web App".
+    - Fill in the instance details appropriately:
+        - Name: myworksxyz (Replace with your app's name)
+        - Publish: Code
+        - Runtime stack: .NET 6 (LTS)
+        - Operating system: Windows
+        - Region: West Europe
+    - For the pricing plan, select according to your compute requirements. For this tutorial, we are using Standard S1.
+    - Click on "Review and create" and then "Create" to create the app service.
+
+6. Create a release pipeline for the solution:
+    - In the Azure DevOps project environment, under the "Pipeline" blade, click on "Release".
+    - Select "Azure App Service Deployment" from the provided list.
+    - Give the stage a name and click on the cancel button.
+    - On the new page, click on "Add artifact" and add the artifact created by your build pipeline.
+    - Enable continuous deployment by clicking on the sign above the artifact box and enabling continuous deployment in the popup.
+    - Close the artifact box by clicking on the cancel sign.
+    - Click on "Task" next to the pipeline (above the two boxes - Artifacts and Stages).
+    - From the dropdown under "Azure Subscription", select the appropriate subscription and click on "Authorize".
+    - Scroll down and select the appropriate app service you created earlier.
+    - Save the settings and click "OK".
+    - Click on "Create release" near the save button, confirm that everything is correct, and click on "Create". You can monitor the progress of your pipeline by clicking on "Release".
+
+7. Verify the deployment:
+    - Visit the URL of your app service and check if the deployment has been successful. The page should serve your app.
+
+## Additional Notes
+
+After deploying the app, I discovered that it was not serving a "Hello World" page as the name suggests on GitHub. To test the CI/CD pipeline, I replaced the served `index.cshtml` file with a simple "Hello World" file, and the app service immediately started serving it. Later, I reverted back to the initial `index.cshtml` file to test the environment once more. You can find the "Hello World" file in the `code` folder, saved as `index-HelloWorld.cshtml`.
+
 Thank you.
+
+---
+
+That's the updated README file using Markdown language. Feel free to make any additional changes or formatting adjustments as needed.
