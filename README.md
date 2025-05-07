@@ -75,3 +75,4 @@ This guide explains how to set up CI/CD pipelines in Azure DevOps to deploy an A
 After deploying the app, I discovered that it was not serving a "Hello World" page as the name suggests on GitHub. To test the CI/CD pipeline, I replaced the served `index.cshtml` file with a simple "Hello World" file, and the app service immediately started serving it. Later, I reverted back to the initial `index.cshtml` file to test the environment once more. You can find the "Hello World" file in the `code` folder, saved as `index-HelloWorld.cshtml`.
 
 Thank you.
+Let's update this repo
